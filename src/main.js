@@ -13,9 +13,9 @@ import {Message} from "element-ui";
 
 axios.defaults.baseURL = 'http://localhost:8080/';
 axios.interceptors.request.use(config => {
-  config.headers.Authorization = window.sessionStorage.getItem("token");
+    config.headers.Authorization = window.sessionStorage.getItem("token");
     config.headers.Platform = 'web';
-  return config;
+    return config;
 });
 Vue.prototype.$axios = axios;
 Vue.prototype.$message = Message;

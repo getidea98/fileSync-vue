@@ -3,7 +3,8 @@
         <el-header></el-header>
         <el-container>
             <el-aside width="500px">
-                <el-upload class="upload-demo" drag action="https://jsonplaceholder.typicode.com/posts/" :before-upload="beforeAvatarUpload" multiple>
+                <el-upload class="upload-demo" drag action="https://jsonplaceholder.typicode.com/posts/"
+                           :before-upload="beforeAvatarUpload" multiple>
                     <i class="el-icon-upload"></i>
                     <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
                 </el-upload>
@@ -66,6 +67,7 @@
                 } else {
                     alert(res.info);
                 }
+                this.getFilesList();
             },
             formatDate: function (res) {
                 this.files = res.data;
@@ -109,8 +111,23 @@
                 }
             },
             down: function (file) {
-                const result = this.$axios.get('/downloadFile/' + file.id);
-                console.log(result.data);
+                this.$axios({
+                    url: '/downloadFile/'+file.id,
+                    method: 'get',
+                    responseType: 'blob'
+                }).then(res => {
+                        const blob = res.data;
+                        const reader = new FileReader();
+                        reader.readAsDataURL(blob);
+                        reader.onload = (e) => {
+                            const a = document.createElement('a');
+                            a.download = file.fileName;
+                            a.href = e.target.result;
+                            document.body.appendChild(a);
+                            a.click();
+                            document.body.removeChild(a);
+                        }
+                    });
             }
         }
     }
